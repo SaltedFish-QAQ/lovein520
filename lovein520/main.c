@@ -4,11 +4,19 @@
 
 int main(void)
 {
+#ifdef WIN32
+    system("chcp 65001 & cls"); //cls ç”¨æ¥æ¸…é™¤ chcp çš„è¾“å‡º
+#endif
     int number = 0;
-    printf("ÇëÊäÈëÄãµÄĞòÁĞºÅ\n");
-    scanf("%d",&number);
-    setSinglePersion(number);
-    getLovePersion();
 
-    system("pause");
+    numberInit();
+    for(;;)
+    {
+        printf("è¯·è¾“å…¥ä½ çš„åºåˆ—å·\n");
+        scanf("%d",&number);
+        setSinglePersion(number);
+        getLovePersion();
+
+        system("pause");
+    }
 }

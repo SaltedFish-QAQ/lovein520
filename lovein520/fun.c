@@ -2,30 +2,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
-static loveNumber people[] = {
-    0, "ÌìÌì",
-    1, "ÁİŞ±",
-    2, "Ä¾Àï",
-    3, "»ùÀĞÌØ",
-    4, "Ò¶¿Õ",
-    5, "Ìì×Ó",
-    6, "¶À½ÇÊŞ",
-    7, "ËæĞÄ",
-    8, "ÈÕÎÄÃû×Ö²»ÈÏÊ¶",
-    9, "¹¾¹¾",
-    10, "Ğ¡ÏÌÓã",
-    11, "Ğ¡Ô²",
-    12, "¹ğÂí",
-    13, "Æ¿×Ó",
-    14, "»ğÍÈ",
-    15, "¾²",
-    16, "´¨",
-    17, "975",
-    18, "°¢Ë÷",
-    19, "ÑÎËÖ",
-    20, "Çà²Ë",
-};
+static loveNumber people[256];
+// static loveNumber people[] = {
+//     0, "å¤©å¤©",
+//     1, "å‡›è–‡",
+//     2, "æœ¨é‡Œ",
+//     3, "åŸºä½¬ç‰¹",
+//     4, "å¶ç©º",
+//     5, "å¤©å­",
+//     6, "ç‹¬è§’å…½",
+//     7, "éšå¿ƒ",
+//     8, "ç†Šæœ¬",
+//     9, "é›¨å¥‡",
+//     10, "å°å’¸é±¼",
+//     11, "å°åœ†",
+//     12, "æ¡‚é©¬",
+//     13, "ç“¶å­",
+//     14, "ç«è…¿",
+//     15, "å·",
+//     16, "975",
+//     17, "é˜¿ç´¢",
+//     18, "æ²‰ç›",
+//     19, "é’èœ",
+// };
 
 static printfLove loveFun[] = {
     PrintfFirstLove,
@@ -38,6 +39,63 @@ static printfLove loveFun[] = {
 static loveNumber * lovePtr = NULL;
 static loveNumber * singlePtr = NULL;
 static printfLove loveFunPtr = NULL;
+
+static int getNumber(char * buff)
+{
+    char ptr[4];
+    int i = 0;
+    int number = 0;
+    for(i; i < 4; i++)
+    {
+        if(buff[i] == ' ')
+        {
+            break;
+        }
+    }
+    memcpy(ptr, buff, i);
+    number = atoi(ptr);
+    memmove(buff, &buff[i+1], 256 - (i + 1));
+    return number;
+}
+
+static void getString(char * buff, char * string)
+{
+    int i = 0;
+
+    for(i; i < 20; i++)
+    {
+        if(buff[i] == ' ')
+        {
+            break;
+        }
+    }
+    memcpy(string, buff, i);
+    memmove(buff, &buff[i+1], 256 - (i + 1));
+}
+
+void numberInit(void)
+{
+    FILE *fp = NULL;
+    char buff[256] = {'\0'};
+
+    fp = fopen("number.txt", "r");
+    fgets(buff, 256, fp);
+    fclose(fp);
+
+    printf("è¯»å–åˆ°çš„ç¾¤ç»„æˆå‘˜åå•å¦‚ä¸‹ï¼š\n");
+    printf("%s\n", buff);
+    for(int i; i < 256; i++)
+    {
+        if(buff[0] == '\0')
+        {
+            break;
+        }
+
+        people[i].number = getNumber(buff);
+
+        getString(buff, people[i].dataptr);
+    }
+}
 
 void setSinglePersion(int number)
 {
@@ -53,35 +111,43 @@ void getLovePersion(void)
 
     lovePtr = &people[a];
 
-    srand((unsigned)time(NULL));
-    a = rand() % 5;
+    if(singlePtr->number == lovePtr->number)
+    {
+        printf("%dä¸ªäººéšæœºæŠ½ä¸€ä¸ªéƒ½èƒ½æŠ½åˆ°è‡ªå·±ï¼Ÿä½ ä¸«ç»ä¸–å¯¡ç‹å•Šï¼%s\n", sizeof(people)/sizeof(people[0]), singlePtr->dataptr);
+    }
+    else
+    {
+        srand((unsigned)time(NULL));
+        a = rand() % 5;
 
-    loveFunPtr = loveFun[a];
-    loveFunPtr(lovePtr);
+        loveFunPtr = loveFun[a];
+        loveFunPtr(lovePtr);
+    }
+    
 
 }
 
 void PrintfFirstLove(loveNumber * ptr)
 {
-    printf("%s¶ÙÊ×\n¼û×ÖÈçÃæ,ÊıÄêÎ´¼ûÏë±ØÄãµ±°²ºÃ.Õâ´ÎÃ»ÓĞ±ğµÄÊÂ¡£Ö»ÊÇÏëÄãÁË¡£¡£¡£\n%s¾´ÉÏ\n", lovePtr->dataptr, singlePtr->dataptr);
+    printf("%sé¡¿é¦–\nè§å­—å¦‚é¢,æ•°å¹´æœªè§æƒ³å¿…ä½ å½“å®‰å¥½.è¿™æ¬¡æ²¡æœ‰åˆ«çš„äº‹ã€‚åªæ˜¯æƒ³ä½ äº†ã€‚ã€‚ã€‚\n%sæ•¬ä¸Š\n", lovePtr->dataptr, singlePtr->dataptr);
 }
 
 void PrintfSecondLove(loveNumber * ptr)
 {
-    printf("%sÄúºÃ\nÄãÎÒÏàÊ¶ÈıÔØÓĞÓà£¬Èç½ñÌì¸÷Ò»·½£¬¸÷×Ô°²ºÃ¡£ÍûÄã½øÀ´°²¿µ£¬ÈçÒâ¡£ÓĞĞ©Ğí½²²»ÍêµÄ»°£¬ÏÂ´Î»áÃæµ±Ãæ½²°Õ¡£\n%sÊé\n", lovePtr->dataptr, singlePtr->dataptr);
+    printf("%sæ‚¨å¥½\nä½ æˆ‘ç›¸è¯†ä¸‰è½½æœ‰ä½™ï¼Œå¦‚ä»Šå¤©å„ä¸€æ–¹ï¼Œå„è‡ªå®‰å¥½ã€‚æœ›ä½ è¿‘æ¥å®‰åº·ï¼Œå¦‚æ„ã€‚æœ‰äº›è®¸è®²ä¸å®Œçš„è¯ï¼Œä¸‹æ¬¡ä¼šé¢å½“é¢è®²ç½¢ã€‚\n%sä¹¦\n", lovePtr->dataptr, singlePtr->dataptr);
 }
 
 void PrintfThridLove(loveNumber * ptr)
 {
-    printf("%s,½üÀ´°²ºÃ£¿\nÁ½ÇéÈôÊÇ¾Ã³¤Ê±£¬ÓÖÆñÔÚ³¯³¯ÄºÄº¡£ÓĞÔµ×Ô»áÔÙ¼û¡£¡£¡£\n%sÁô\n", lovePtr->dataptr, singlePtr->dataptr);
+    printf("%s,è¿‘æ¥å®‰å¥½ï¼Ÿ\nä¸¤æƒ…è‹¥æ˜¯ä¹…é•¿æ—¶ï¼Œåˆå²‚åœ¨æœæœæš®æš®ã€‚æœ‰ç¼˜è‡ªä¼šå†è§ã€‚ã€‚ã€‚\n%sç•™\n", lovePtr->dataptr, singlePtr->dataptr);
 }
 
 void PrintfFourLove(loveNumber * ptr)
 {
-    printf("%s\nÎÒÒ»Éú¶¼ÊÇÒ»¸ö¼á¶¨µÄÎ¨ÎïÖ÷ÒåÕß£¬Î¨ÓĞÄãÎÒÏ£ÍûÓĞÀ´Éú\n%s\n", lovePtr->dataptr, singlePtr->dataptr);
+    printf("%s\næˆ‘ä¸€ç”Ÿéƒ½æ˜¯ä¸€ä¸ªåšå®šçš„å”¯ç‰©ä¸»ä¹‰è€…ï¼Œå”¯æœ‰ä½ æˆ‘å¸Œæœ›æœ‰æ¥ç”Ÿ\n%s\n", lovePtr->dataptr, singlePtr->dataptr);
 }
 
 void PrintfFiveLove(loveNumber * ptr)
 {
-    printf("%s¶ÙÊ×\n¿ìÑ©Ê±Çç£¬¼ÑÏë°²ÉÆ¡£Î´¹ûÎª½áÁ¦²»´Î¡£%s¶ÙÊ×¡£\n%s\n", lovePtr->dataptr, lovePtr->dataptr, singlePtr->dataptr);
+    printf("%sé¡¿é¦–\nå¿«é›ªæ—¶æ™´ï¼Œä½³æƒ³å®‰å–„ã€‚æœªæœä¸ºç»“åŠ›ä¸æ¬¡ã€‚%sé¡¿é¦–ã€‚\n%s\n", lovePtr->dataptr, lovePtr->dataptr, singlePtr->dataptr);
 }

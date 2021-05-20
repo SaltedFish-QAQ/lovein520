@@ -4,8 +4,10 @@
 typedef struct loveNumber
 {
     int number;
-    char * dataptr;
+    char dataptr[20];
 }loveNumber;
+
+void numberInit(void);
 
 void setSinglePersion(int number);
 void getLovePersion(void);
